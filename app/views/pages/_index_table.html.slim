@@ -1,0 +1,26 @@
+table.table.table-striped.table-hover.datatable
+  thead
+    tr
+      th Site
+      th Author
+      th Title
+      / th Body
+      th Date published
+      th
+      th
+      th
+
+  tbody
+    - pages.each do |page|
+      tr
+        td = page.site.name
+        td = page.author.name
+        td = page.title
+        / td = page.content.body
+        / .truncate(80, separator: /\s/)
+        td = page.date_published
+        td = link_to 'Show', page
+        td = link_to 'Edit', edit_page_path(page)
+        td = link_to 'Destroy', page, data: { confirm: 'Are you sure?' }, method: :delete
+
+br

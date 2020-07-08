@@ -1,0 +1,51 @@
+.row
+  .col-md-2
+    = render partial: '/shared/categories'  
+  
+  .col-md-8
+    p#notice = notice
+
+    .row
+      .col-md-7
+        h3 
+          = @page.title
+            
+        p
+          strong Site: 
+          = link_to @page.site.name, @page.native_page_url
+        p
+          strong Author: 
+          = @page.author.name  
+        p
+          strong Date published: 
+          = @page.date_published.to_formatted_s(:long_ordinal)
+        
+        p
+          strong Categories: 
+          = @page.categories.pluck(:name).map(&:titleize).join(", ")  
+      
+      .col-md-2   
+        = image_tag(@page.native_image_url, class: 'rounded') unless @page.native_image_url.blank?
+
+    p
+      = @page.content.body.html_safe
+    p
+      strong Date published:
+      = @page.date_published
+    p
+      strong Native:
+      = @page.native_id
+    p
+      strong Native page url:
+      = @page.native_page_url
+    p
+      strong Native image url:
+      = @page.native_image_url
+
+    => link_to 'Edit', edit_page_path(@page)
+    '|
+    =< link_to 'Back', pages_path
+    
+  .col-md-2    
+    
+    

@@ -1,0 +1,38 @@
+
+= simple_form_for(@page) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+  
+  .form-inputs
+    .row
+      .col-md-4
+        = f.association :site
+        
+      .col-md-4  
+        = f.association :author
+      .col-md-4 
+        = f.input :date_published 
+      
+    .row
+      .col-md-12      
+        = f.input :title, class: 'input-lg'
+      
+      .col-md-12  
+        = f.rich_text_area :content
+        
+        / = f.input :body, as: :rich_text_area
+        
+        
+        
+        
+      
+    .row 
+      .col-md-4 
+        = f.input :native_id
+      .col-md-4
+        = f.input :native_page_url
+      .col-md-4 
+        = f.input :native_image_url
+
+    .form-actions
+        = f.button :submit

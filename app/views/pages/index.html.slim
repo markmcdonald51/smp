@@ -1,0 +1,11 @@
+h1 Listing pages
+
+= render partial: 'index_table', locals: { pages: @pages}
+br
+
+= link_to 'New Page', new_page_path
+
+javascript:
+  $(document).ready(function() {
+    $('#dttb').dataTable();
+  });

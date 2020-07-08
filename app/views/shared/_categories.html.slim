@@ -1,0 +1,4 @@
+.list-group
+  - Category.all.order(:name).each do |c|
+    li.list-group-item = link_to "#{c.name.upcase} #{c.pages.count}", c
+  

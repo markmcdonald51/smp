@@ -1,0 +1,18 @@
+p#notice = notice
+
+p
+  strong Name:
+  = @site.name
+p
+  strong Description:
+  = @site.description
+p
+  strong Url:
+  = @site.url
+  
+= render partial: '/pages/index_table', locals: { pages: @site.pages}
+  
+
+=> link_to 'Edit', edit_site_path(@site)
+'|
+=< link_to 'Back', sites_path
