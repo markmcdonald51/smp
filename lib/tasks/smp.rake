@@ -28,6 +28,8 @@ namespace :smp do
       puts page
     end  
   end
+
+  #cb-entry-content clearfix
     
   
   desc "Get the blogs and save them in DB "
