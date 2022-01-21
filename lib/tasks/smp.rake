@@ -53,6 +53,7 @@ end
 
 def parse_index_list(index_list)     
   index_list.css('article').each_with_index do |l,i2|   
+    puts "#{i2}) -------------------------------------------------"
     title = l.css('.cb-post-title').text
     publish_date = l.css('time')&.text
     publish_date = Date.parse(publish_date) if publish_date.present?
@@ -60,10 +61,14 @@ def parse_index_list(index_list)
     url_page = l.css('.cb-post-title a').attr('href').value
     categories = l.css('.cb-cateogry li')&.map(&:text)
     puts categories
+    puts publish_date
+    puts author
     puts title
     puts url_page
     page = Nokogiri::HTML(URI.open(url_page)).css('.cb-itemprop')
     page_html = page.css('p').to_html
+    puts page_html
+    
     binding.pry
   end
 
