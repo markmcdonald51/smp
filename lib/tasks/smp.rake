@@ -1,6 +1,25 @@
 require 'open-uri'
     
 namespace :smp do
+
+
+  desc "move the smp content over to pages and gzip them "
+  task migrate_content_to_gzipped_field: :environment do
+    Site.where('id < 4' ).each do |s|
+      pages = s.pages
+      puts "#{s.name} has #{pages.length}"
+
+      pages.each_with_index do |p, i|
+        p.zbody = ActiveSupport::Gzip.compress(p.content)
+        p.content = nil 
+        p.save
+        puts "saved #{p.title}"
+      end
+
+    end    
+  end
+
+
   desc "Get the blogs and save them in DB "
   task load_data: :environment do    
     site = Site.find_or_create_by(name: "Single Man's Paradise", url: 'https://singlemansparadise.com')
@@ -45,36 +64,70 @@ namespace :smp do
       list_url =  blog.attr('href')
       puts "getting #{list_url}"
       index_list = Nokogiri::HTML(URI.open(list_url)) 
-      parse_index_list(index_list)  
+      parse_index_list(index_list, site)  
       
     end
   end
 end
 
-def parse_index_list(index_list)     
+def parse_index_list(index_list, site)     
   index_list.css('article').each_with_index do |l,i2|   
     puts "#{i2}) -------------------------------------------------"
     title = l.css('.cb-post-title').text
+    next if Page.find_by(title: title)
     publish_date = l.css('time')&.text
     publish_date = Date.parse(publish_date) if publish_date.present?
     author = l.css('.cb-author').text
+   
     url_page = l.css('.cb-post-title a').attr('href').value
-    categories = l.css('.cb-cateogry li')&.map(&:text)
+    categories = l.css('.cb-cateogry li')&.map(&:text)&.map(&:downcase)
+    #page.categories << categories.map{|n| Category.find_or_create_by(name: n)}
     puts categories
     puts publish_date
     puts author
     puts title
     puts url_page
-    page = Nokogiri::HTML(URI.open(url_page)).css('.cb-itemprop')
+    page = Nokogiri::HTML(URI.open(url_page)).css('.cb-entry-content')
+    author_bio = page.css('.cb-author-bio').to_html
+    page.css('#cb-author-box').remove
+    page.css('.social-share-container').remove
     page_html = page.css('p').to_html
-    puts page_html
+
+    author  = Author.find_or_create_by(name: author)
+    author.bio = author_bio if author.bio.blank? 
+    author.save
+
+    data_page = site.pages.new(
+      title: title,
+      #native_image_url: blog.at('img').attr('src'),
+      native_page_url: url_page,
+      date_published: publish_date,
+      author: author,
+      zbody:  ActiveSupport::Gzip.compress(page_html) )
     
-    binding.pry
+
+
+    if data_page.save
+      data_page.categories << categories.map{|n| Category.find_or_create_by(name: n)}
+      puts "save"
+    else
+      puts "skipped"
+    end
+      puts data_page
   end
 
   if (next_page = index_list.css('.page-numbers')&.last&.attr('href'))
-    parse_index_list(Nokogiri::HTML(URI.open(next_page)))
+    count = 0
+    begin
+      parse_index_list(Nokogiri::HTML(URI.open(next_page)), site) 
+    rescue Errno::ECONNRESET => e
+      count += 1
+      retry unless count > 10
+      puts "tried 10 times and couldn't get #{next_page}: #{e}"
+    end
   end
+
+
 end
 
 =begin

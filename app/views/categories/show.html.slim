@@ -10,7 +10,7 @@
           - @category.pages.order(:publish_date).each do |p|
             .col-md-4
               .card.mb-4.shadow-sm
-                = image_tag p.native_image_url, class: 'card-img-top rounded' 
+                = image_tag p.native_image_url, class: 'card-img-top rounded' if p.native_image_url.present?
                 .card-body
                   p.card-text = p.title
                   .d-flex.justify-content-between.align-items-center
