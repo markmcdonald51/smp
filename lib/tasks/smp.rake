@@ -4,18 +4,18 @@ namespace :smp do
 
 
   desc "move the smp content over to pages and gzip them "
-  task migrate_content_to_gzipped_field: :environment do
+  task migrate_site_content_to_gzipped_field: :environment do
     Site.where('id < 4' ).each do |s|
       pages = s.pages
       puts "#{s.name} has #{pages.length}"
 
       pages.each_with_index do |p, i|
-        p.zbody = ActiveSupport::Gzip.compress(p.content)
-        p.content = nil 
+        next if p.id == 1
+        p.zbody = ActiveSupport::Gzip.compress(p.content.body)
+        p.content.body = nil 
         p.save
         puts "saved #{p.title}"
       end
-
     end    
   end
 

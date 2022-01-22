@@ -10,7 +10,7 @@ p
   strong Url:
   = @site.url
   
-= render partial: '/pages/index_table', locals: { pages: @site.pages}
+= render partial: '/pages/index_table', locals: { pages: @site.pages.includes(:author, :categories)}
   
 
 => link_to 'Edit', edit_site_path(@site)

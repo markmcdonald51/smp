@@ -28,7 +28,7 @@
         = image_tag(@page.native_image_url, class: 'rounded') unless @page.native_image_url.blank?
 
     p
-      = @page.content&.body&.html_safe || @page.body_content&.html_safe
+      = @page.body_content&.html_safe
     
     p
       strong Date published:
