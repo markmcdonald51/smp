@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-#ruby '2.6.3'
+ruby '3.3.0'
 
 #gem 'httparty'
 gem 'pry-rails'
@@ -23,9 +23,9 @@ gem 'jquery-ui-rails'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1.4.4'
+gem 'rails', '7.1.3' #'6.1.4.4'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
+gem 'sqlite3'#, '~> 1.4'
 # Use Puma as the app server
 gem 'puma'#, '~> 3.11'
 # Use SCSS for stylesheets
@@ -54,6 +54,7 @@ group :development, :test do
 end
 
 group :development do
+    gem 'railroady'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console'#, '>= 3.3.0'
   gem 'listen'#, '>= 3.0.5', '< 3.2'
